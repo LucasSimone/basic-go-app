@@ -19,11 +19,12 @@ func getEnv(key, defaultVal string) string {
 
 // Reads in the .env variables and sets them as os enviroment
 // varibales
-func setEnvConfig() {
+func setEnvConfig(path string) {
+
 	// Open the .env file
-	file, err := os.Open(".env")
+	file, err := os.Open(path)
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Failed to open ", path, "file.")
 	}
 	// Defer file to be closed on function end
 	defer file.Close()
@@ -33,39 +34,37 @@ func setEnvConfig() {
 
 	// Read in the .env file line by line
 	for fileScanner.Scan() {
-		//Find the first = to split the line
-		splitIndex := strings.Index(fileScanner.Text(),"=")
-		if splitIndex > -1 {
-			//Split line into Key and value removing any surrounding whitespace
-			key := strings.TrimSpace(fileScanner.Text()[:splitIndex])
-			value := strings.TrimSpace(fileScanner.Text()[splitIndex+1:])
-			//Set the variable as a os env variable
-			setEnvVariable(key, value)
-		}else{
-			log.Printf("Invalid line in .env: no = found")
-		}		
-		
+		// Get the next line
+		line := fileScanner.Text()
+
+		// Check if the line is empty or a comment
+		if len(line) == 0 || strings.HasPrefix(line, "#") {
+			continue
+		}
+
+		// Split the line into the key and value parts
+		key, value, found := strings.Cut(line, "=")
+
+		if !found {
+			log.Println("Invalid line in .env: ", line)
+		}
+
+		// Trim any surroundng white space
+		key = strings.TrimSpace(key)
+		value = strings.TrimSpace(value)
+
+		// Time any quotations from the value
+		value = strings.Trim(value, `"'`)
+
+		// Set the enviroment variable and log any errors
+		err := os.Setenv(key, value)
+		if err != nil {
+			log.Fatal(err)
+		}
+
 	}
 
 	if err := fileScanner.Err(); err != nil {
 		log.Println(err)
 	}
-}
-
-// Takes a key and a value and sets an according
-// os enviroment variable
-func setEnvVariable(key, value string) {
-	err := os.Setenv(key, trimQuotes(value))
-
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
-// Takes a string and trims any prefix and suffix quotation marks
-func trimQuotes(str string) string {
-	if str[0] == '\'' || str[0] == '"' {
-		str = str[1 : len(str)-1]
-	}
-	return str
 }
