@@ -2,15 +2,16 @@ package main
 
 import (
 	"html/template"
-	"log"
 	"net/http"
 	"strconv"
 )
 
-func home(writer http.ResponseWriter, request *http.Request) {
+func (app *application) home(writer http.ResponseWriter, request *http.Request) {
 
+	// Modify the header
 	writer.Header().Add("Server", "Go")
 
+	// All the template files we need to parse for the html response
 	files := []string{
 		"./ui/html/base.tmpl",
 		"./ui/html/partials/head.tmpl",
@@ -20,22 +21,23 @@ func home(writer http.ResponseWriter, request *http.Request) {
 		"./ui/html/pages/home.tmpl",
 	}
 
+	// Parse the files
 	ts, err := template.ParseFiles(files...)
 	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+		app.serverError(writer, request, err)
 		return
 	}
 
+	// Write the response with the content of the base template
 	err = ts.ExecuteTemplate(writer, "base", nil)
 	if err != nil {
-		log.Print(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+		app.serverError(writer, request, err)
+		return
 	}
 
 }
 
-func pageView(writer http.ResponseWriter, request *http.Request) {
+func (app *application) pageView(writer http.ResponseWriter, request *http.Request) {
 
 	id, err := strconv.Atoi(request.PathValue("id"))
 	if err != nil || id < 1 {
@@ -51,16 +53,16 @@ func pageView(writer http.ResponseWriter, request *http.Request) {
 	//fmt.Fprintf(writer, "Display some data with ID %d...", id)
 }
 
-func pageCreateGet(writer http.ResponseWriter, request *http.Request) {
+func (app *application) pageCreateGet(writer http.ResponseWriter, request *http.Request) {
 	writer.Write([]byte("Display a form for creation"))
 }
 
-func fileGet(writer http.ResponseWriter, request *http.Request) {
+func (app *application) fileGet(writer http.ResponseWriter, request *http.Request) {
 	writer.Write([]byte("Display a form for creation"))
 	http.ServeFile(writer, request, "./ui/static/img/yellow_boulder.jpg")
 }
 
-func pageCreatePost(writer http.ResponseWriter, request *http.Request) {
+func (app *application) pageCreatePost(writer http.ResponseWriter, request *http.Request) {
 
 	writer.WriteHeader(http.StatusCreated)
 
