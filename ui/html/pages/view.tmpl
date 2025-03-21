@@ -1,0 +1,20 @@
+{{define "title"}}Climb #{{.Climb.ID}}{{end}}
+
+{{define "main"}}
+    <div class='climb'>
+        <div>
+            <strong>
+                {{ if .Climb.Title.Value }}
+                    {{ .Climb.Title.String  }}
+                {{ else }}
+                    Unknown
+                {{ end }}
+            </strong>
+            <span>{{.Climb.Grade.String}}</span>
+        </div>
+        <div>
+            <div>Created: {{.Climb.Created.Month }} {{.Climb.Created.Day }}, {{.Climb.Created.Year }}</div>
+            <div>Setter: {{.Climb.Setter.String}}</div>
+        </div>
+    </div>
+{{end}}

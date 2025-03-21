@@ -1,0 +1,42 @@
+{{define "title"}}Latest Climbs{{end}}
+
+{{define "main"}}
+
+    {{ if .Climbs }}
+        <table>
+            <tr>
+                <th>#ID</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Grade</th>
+                <th>Date Set</th>
+                <th>Setter</th>
+            </tr>
+            {{ range .Climbs }}
+                <tr>
+                    <td>
+                        #{{.ID}}
+                    </td>
+                    <td>
+                        <a href="/view/{{.ID}}">{{.Title.String}}</a>
+                    </td>
+                    <td>
+                        {{.Category.String}}
+                    </td>
+                    <td>
+                        {{.Grade.String}}
+                    </td>
+                    <td>
+                        {{.Created.Month }} {{.Created.Day }}, {{.Created.Year }}
+                    </td>
+                    <td>
+                        {{.Setter.String}}
+                    </td>
+                </tr>
+            {{ end }}
+        </table>
+    {{ else }}
+        Sorry there aren't any climbs right now.
+    {{ end }}
+
+{{end}}

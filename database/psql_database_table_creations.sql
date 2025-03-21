@@ -1,5 +1,5 @@
 -- Creates the table schema for the routes table
-CREATE TABLE routes(
+CREATE TABLE climbs(
     id serial PRIMARY KEY,
     title varchar(255),
     category varchar(255),
@@ -9,7 +9,7 @@ CREATE TABLE routes(
 );
 
 -- Inserts an new route(row) into the routes table
-INSERT INTO routes (
+INSERT INTO climbs (
     title, 
     category,
     grade,
@@ -24,7 +24,7 @@ INSERT INTO routes (
 );
 
 -- Insert dummy data to populate the routes table
-INSERT INTO routes (title, category, grade, setter, time_created) VALUES
+INSERT INTO climbs (title, category, grade, setter, time_created) VALUES
 ('Overhang Fury', 'boulder', 'V5', 'Alice Smith', '2024-08-15 14:20:00'),
 ('Crux Delight', 'sport', '5.10b', 'Bob Johnson', '2024-09-03 16:30:15'),
 ('Pocket Rocket', 'boulder', 'V6', 'Emma Brown', '2024-09-25 17:00:30'),

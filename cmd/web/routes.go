@@ -5,7 +5,7 @@ import (
 )
 
 // The routes function returns a ServeMux which defines the various routes for our application
-func(app *application) routes() *http.ServeMux {
+func (app *application) routes() *http.ServeMux {
 	mux := http.NewServeMux()
 
 	// Default go fileserver handler to handle the static files
@@ -29,12 +29,14 @@ func(app *application) routes() *http.ServeMux {
 	// that doesn not fit a more specific route
 	mux.HandleFunc("GET /{$}", app.home)
 
-	mux.HandleFunc("GET /view/{id}", app.pageView)
-	mux.HandleFunc("GET /create", app.pageCreateGet)
+	mux.HandleFunc("GET /view/{id}", app.climbView)
+	mux.HandleFunc("GET /latest", app.climbLatest)
+	mux.HandleFunc("GET /json/{quantity}", app.jsonRequest)
+	mux.HandleFunc("GET /create", app.climbCreateGet)
 	mux.HandleFunc("GET /file", app.fileGet)
 
 	// Seperate POST request route for the create route
-	mux.HandleFunc("POST /create", app.pageCreatePost)
+	mux.HandleFunc("POST /create", app.climbCreatePost)
 
 	return mux
 }

@@ -64,7 +64,16 @@ func setEnvConfig(path string) {
 
 	}
 
+	// Check for any errors logging and exiting the function if there are
 	if err := fileScanner.Err(); err != nil {
 		log.Println(err)
+		return
+	}
+
+	// Build and store the DSN
+	dsn := "host=" + getEnv("DATABASE_HOST", "localhost") + " port=" + getEnv("DATABASE_PORT", "5432") + " dbname=" + getEnv("DATABASE_NAME", "sample") + " user=" + getEnv("DATABASE_USER", "user") + " password=" + getEnv("DATABASE_PASS", "password")
+	err = os.Setenv("DSN", dsn)
+	if err != nil {
+		log.Fatal(err)
 	}
 }
