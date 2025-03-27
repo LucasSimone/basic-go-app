@@ -27,7 +27,7 @@
                         {{.Grade.String}}
                     </td>
                     <td>
-                        {{.Created.Month }} {{.Created.Day }}, {{.Created.Year }}
+                        {{.Created | formatMonthDayYear}}
                     </td>
                     <td>
                         {{.Setter.String}}

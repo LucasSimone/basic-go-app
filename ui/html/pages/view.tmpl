@@ -13,7 +13,7 @@
             <span>{{.Climb.Grade.String}}</span>
         </div>
         <div>
-            <div>Created: {{.Climb.Created.Month }} {{.Climb.Created.Day }}, {{.Climb.Created.Year }}</div>
+            <div>Created: {{.Climb.Created | formatMonthDayYear}}</div>
             <div>Setter: {{.Climb.Setter.String}}</div>
         </div>
     </div>

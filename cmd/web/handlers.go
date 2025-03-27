@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"html/template"
 	"net/http"
 	"strconv"
 
@@ -22,6 +21,7 @@ func (app *application) home(writer http.ResponseWriter, request *http.Request) 
 
 func (app *application) climbView(writer http.ResponseWriter, request *http.Request) {
 
+	//Find the requested id from the url
 	id, err := strconv.Atoi(request.PathValue("id"))
 	if err != nil || id < 1 {
 		http.NotFound(writer, request)
@@ -42,11 +42,12 @@ func (app *application) climbView(writer http.ResponseWriter, request *http.Requ
 		return
 	}
 
-	// Create the tempalte data to pass through
-	data := templateData{
-		Climb: climb,
-	}
+	// Initalize a template data struct with the default data
+	data := app.newTemplateData(request)
+	// Set the Climb in our template data
+	data.Climb = climb
 
+	// Render the template
 	app.renderTemplate(writer, request, http.StatusOK, "view.tmpl", data)
 
 }
@@ -60,31 +61,13 @@ func (app *application) climbLatest(writer http.ResponseWriter, request *http.Re
 		return
 	}
 
-	data := templateData{
-		Climbs: climbs,
-	}
+	// Initalize a template data struct with the default data
+	data := app.newTemplateData(request)
+	// Set the Climbs in our template data
+	data.Climbs = climbs
 
-	files := []string{
-		"./ui/html/base.tmpl",
-		"./ui/html/partials/head.tmpl",
-		"./ui/html/partials/header.tmpl",
-		"./ui/html/partials/footer.tmpl",
-		"./ui/html/partials/scripts.tmpl",
-		"./ui/html/pages/latest.tmpl",
-	}
-
-	// Parse the templates
-	ts, err := template.ParseFiles(files...)
-	if err != nil {
-		app.serverError(writer, request, err)
-		return
-	}
-
-	// Execute the template passing in the climb
-	err = ts.ExecuteTemplate(writer, "base", data)
-	if err != nil {
-		app.serverError(writer, request, err)
-	}
+	// Render the template
+	app.renderTemplate(writer, request, http.StatusOK, "latest.tmpl", data)
 
 }
 
